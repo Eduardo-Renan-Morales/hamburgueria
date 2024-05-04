@@ -31,7 +31,6 @@ app.get('/orders/:id',checkUserId, (request, response) => {
   
     return response.json(aOrders)
     
-    return response.json()
 })
 
 app.get('/orders', (request, response) => {
