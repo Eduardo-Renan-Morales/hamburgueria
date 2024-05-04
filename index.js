@@ -69,6 +69,21 @@ app.delete('/orders/:id',checkUserId, (request, response) => {
 })
 
 
+app.patch('/orders/:id',checkUserId, (request, response) => {
+  
+    const {order, clientName, price, status } = request.body
+    const index =  request.userIndex
+    const id = request.userId
+    const pedidoOk = {id, order, clientName, price, status: 'pronto' }
+
+    orders[index] = pedidoOk
+  
+    return response.json(pedidoOk)
+
+})
+
+
+
 
 app.listen(port, () => {
     console.log('server started on port 3000 ${port}')
