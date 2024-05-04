@@ -22,10 +22,14 @@ const checkUserId = (request, response, next) =>{
 
 app.get('/orders/:id',checkUserId, (request, response) => {
 
+    const {order, clientName, price, status } = request.body
     const index =  request.userIndex
     const id = request.userId
+    const aOrders = {id, order, clientName, price, status }
 
-    orders = id,index
+    orders[index] = aOrders
+  
+    return response.json(aOrders)
     
     return response.json()
 })
