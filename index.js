@@ -6,6 +6,14 @@ app.use(express.json())
 
 const orders = []
 
+const mycheckUserId = (request, response, next) =>{
+    console.log(request.url,request.method)
+
+
+    next()
+}
+
+
 
 const checkUserId = (request, response, next) =>{
     const { id } = request.params
@@ -20,25 +28,22 @@ const checkUserId = (request, response, next) =>{
     next()
 }
 
-app.get('/orders/:id',checkUserId, (request, response) => {
+app.get('/orders/:id',checkUserId,mycheckUserId, (request, response) => {
+        const index = request.userIndex;
+        const order = orders[index];
 
-    const {order, clientName, price, status } = request.body
-    const index =  request.userIndex
-    const id = request.userId
-    const aOrders = {id, order, clientName, price, status }
-
-    orders[index] = aOrders
+        // console.log(request)
   
-    return response.json(aOrders)
+    return response.json(order)
     
 })
 
-app.get('/orders', (request, response) => {
+app.get('/orders',mycheckUserId, (request, response) => {
 
     return response.json(orders)
 })
 
-app.post('/orders', (request, response) => {
+app.post('/orders',mycheckUserId, (request, response) => {
     const { order, clientName, price } = request.body
 
     const user = { id: uuid.v4(), order, clientName, price, status:'Em preparação' ,}
@@ -48,7 +53,7 @@ app.post('/orders', (request, response) => {
     return response.status(201).json(user)
 })
 
-app.put('/orders/:id',checkUserId, (request, response) => {
+app.put('/orders/:id',checkUserId,mycheckUserId, (request, response) => {
     
     const {order, clientName, price, status } = request.body
     const index =  request.userIndex
@@ -60,7 +65,7 @@ app.put('/orders/:id',checkUserId, (request, response) => {
     return response.json(updateOrders)
 })
 
-app.delete('/orders/:id',checkUserId, (request, response) => {
+app.delete('/orders/:id',checkUserId, mycheckUserId, (request, response) => {
     const index =  request.userIndex
 
     orders.splice(index,1)
@@ -69,21 +74,18 @@ app.delete('/orders/:id',checkUserId, (request, response) => {
 })
 
 
-app.patch('/orders/:id',checkUserId, (request, response) => {
+app.patch('/orders/:id',checkUserId, mycheckUserId, (request, response) => {
   
-    const {order, clientName, price, status } = request.body
-    const index =  request.userIndex
-    const id = request.userId
-    const pedidoOk = {id, order, clientName, price, status: 'pronto' }
+    const index = request.userIndex;
+    const order = orders[index];
 
-    orders[index] = pedidoOk
-  
-    return response.json(pedidoOk)
+
+    return response.json({order,status: 'Pedido pronto'})
 
 })
 
 
-
+ 
 
 app.listen(port, () => {
     console.log('server started on port 3000 ${port}')
